@@ -1,0 +1,86 @@
+name: Test Docker Setup (act)
+
+# This workflow simulates the Docker build to test with act locally
+# Run with: act -W .github/workflows/test-docker-setup.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-setup:
+    runs-on: ubuntu-latest
+    name: Test OMJL Tutorial Setup
+    steps:
+    - name: Install system dependencies
+      run: |
+        apt-get update
+        apt-get install -y curl git build-essential autoconf automake libtool openjdk-21-jdk
+
+    - name: Install Julia 1.12
+      run: |
+        export JULIA_VERSION=1.12.4
+        curl -fsSL "https://julialang-s3.julialang.org/bin/linux/x64/1.12/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" | tar -xz -C /opt
+        ln -s /opt/julia-${JULIA_VERSION}/bin/julia /usr/local/bin/julia
+        ln -s /opt/julia-${JULIA_VERSION}/share/julia/julia-config.jl /usr/local/bin/julia-config.jl
+        julia --version
+
+    - name: Clone OM.jl and submodules
+      run: |
+        git clone --branch modprod2026 https://github.com/JKRT/OM.jl.git /opt/OM.jl
+        cd /opt/OM.jl
+        git clone --branch modprod2026 https://github.com/OpenModelica/MetaModelica.jl.git MetaModelica.jl || git clone https://github.com/OpenModelica/MetaModelica.jl.git MetaModelica.jl
+        git clone https://github.com/OpenModelica/ImmutableList.jl.git ImmutableList.jl
+        git clone https://github.com/OpenModelica/Absyn.jl.git Absyn.jl
+        git clone --branch master https://github.com/OpenModelica/OMParser.jl.git OMParser.jl
+        git clone --branch modprod2026 https://github.com/JKRT/OMFrontend.jl.git OMFrontend.jl
+        git clone --branch modprod2026 https://github.com/JKRT/OMBackend.jl.git OMBackend.jl
+        git clone https://github.com/JKRT/ArrayUtil.jl.git ArrayUtil.jl || true
+        git clone https://github.com/JKRT/ListUtil.jl.git ListUtil.jl || true
+        git clone https://github.com/JKRT/DAE.jl.git DAE.jl || true
+        git clone https://github.com/OpenModelica/SCode.jl.git SCode.jl || true
+        git clone --branch master https://github.com/OpenModelica/OMRuntimeExternalC.jl.git OMRuntimeExternalC.jl
+
+    - name: Build parser
+      run: |
+        cd /opt/OM.jl/OMParser.jl/lib/parser
+        autoconf && ./configure && make
+
+    - name: Setup Julia environment
+      run: |
+        mkdir -p /opt/tutorial
+        cd /opt/tutorial
+        julia -e '
+          using Pkg
+          Pkg.Registry.add("General")
+          Pkg.activate(".")
+          Pkg.develop(path="/opt/OM.jl/MetaModelica.jl")
+          Pkg.develop(path="/opt/OM.jl/ImmutableList.jl")
+          Pkg.develop(path="/opt/OM.jl/Absyn.jl")
+          Pkg.develop(path="/opt/OM.jl/SCode.jl")
+          Pkg.develop(path="/opt/OM.jl/DAE.jl")
+          Pkg.develop(path="/opt/OM.jl/ArrayUtil.jl")
+          Pkg.develop(path="/opt/OM.jl/ListUtil.jl")
+          Pkg.develop(path="/opt/OM.jl/OMParser.jl")
+          Pkg.develop(path="/opt/OM.jl/OMRuntimeExternalC.jl")
+          Pkg.develop(path="/opt/OM.jl/OMFrontend.jl")
+          Pkg.develop(path="/opt/OM.jl/OMBackend.jl")
+          Pkg.add(["IJulia", "DifferentialEquations", "Plots", "ForwardDiff", "OrdinaryDiffEq"])
+          Pkg.instantiate()
+          Pkg.build()
+        '
+
+    - name: Test precompilation
+      run: |
+        cd /opt/tutorial
+        julia --project=. -e '
+          @info "Testing package imports..."
+          using MetaModelica
+          @info "MetaModelica loaded"
+          using OMParser
+          @info "OMParser loaded"
+          using OMFrontend
+          @info "OMFrontend loaded"
+          using OMBackend
+          @info "OMBackend loaded"
+          @info "All packages loaded successfully!"
+        '
