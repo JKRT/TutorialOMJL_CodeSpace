@@ -72,6 +72,8 @@ RUN julia -e ' \
     Pkg.instantiate(); \
     '
 
+RUN julia -e 'using OM; using OMFrontend'
+
 # Final setup
 WORKDIR /workspaces/TutorialOMJL_CodeSpace
 
