@@ -2,6 +2,30 @@
 
 Interactive tutorial for OpenModelica.jl (OMJL) - a Julia-based Modelica compiler.
 
+#NOTE 
+```
+julia> using OM
+┌ OMRuntimeExternalC
+│  ┌ Error: Could not find the ModelicaStandardTables library
+│  └ @ OMRuntimeExternalC /opt/OM.jl/OMRuntimeExternalC.jl/src/pathSetup.jl:17
+│  ┌ Error: omc runtime not found
+│  └ @ OMRuntimeExternalC /opt/OM.jl/OMRuntimeExternalC.jl/src/pathSetup.jl:31
+│  ┌ Error: omc sim runtime not found
+│  └ @ OMRuntimeExternalC /opt/OM.jl/OMRuntimeExternalC.jl/src/pathSetup.jl:42
+│  ┌ Error: omc runtime for I/O not found
+│  └ @ OMRuntimeExternalC /opt/OM.jl/OMRuntimeExternalC.jl/src/pathSetup.jl:53
+│  ┌ Error: omc runtime for external C not found
+│  └ @ OMRuntimeExternalC /opt/OM.jl/OMRuntimeExternalC.jl/src/pathSetup.jl:64
+└  
+┌ OM
+│  [Output was shown above]
+```
+The code above is not really an error message!
+
+#Command to pull Docker 
+docker pull ghcr.io/jkrt/omjl-tutorial:latest  <img width="768" height="88" alt="image" src="https://github.com/user-attachments/assets/6f7a7acc-e4a5-4aaf-9b82-1d40dffdebe5" />
+
+
 ## Quick Start
 
 ### Option 1: GitHub Codespaces (Recommended)
@@ -23,6 +47,7 @@ Run the tutorial in a Docker container with everything pre-installed:
 
 ```bash
 # Pull and run interactively
+
 docker run -it -p 8888:8888 -v $(pwd):/workspaces/TutorialOMJL_CodeSpace ghcr.io/jkrt/omjl-tutorial:latest
 
 # Or build locally
