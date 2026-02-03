@@ -1,6 +1,6 @@
 {
   "name": "OMJL Tutorial",
-  "image": "ghcr.io/jkrt/omjl-tutorial:latest",
+  "image": "ghcr.io/jkrt/omjl-tutorial:pre-compiled",
   "postCreateCommand": "echo 'Environment ready! Start Jupyter with: julia -e \"using IJulia; notebook(dir=\\\"notebooks\\\")\"'",
   "customizations": {
     "vscode": {
