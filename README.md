@@ -73,6 +73,31 @@ julia -e 'using IJulia; notebook(dir="/workspaces/TutorialOMJL_CodeSpace/noteboo
 
 Then open `http://localhost:8888` in your browser.
 
+#### Using Docker with VSCode (Alternative)
+
+If you prefer VSCode over the browser-based Jupyter interface:
+
+1. **Start the container with a name** (keep this terminal open):
+   ```bash
+   docker run -it --name OMtutorial -v $(pwd):/workspaces/TutorialOMJL_CodeSpace ghcr.io/jkrt/omjl-tutorial:latest
+   ```
+
+2. **Inside the container**, start Julia (without the host flag):
+   ```bash
+   julia -e 'using IJulia; notebook(dir="/workspaces/TutorialOMJL_CodeSpace/notebooks")'
+   ```
+   Keep the terminal running.
+
+3. **In VSCode**, click the `><` icon in the bottom-left corner, then select **Attach to Running Container** and choose `OMtutorial`.
+
+4. A new VSCode window opens connected to the container (the `><` icon turns blue and shows the container name).
+
+5. In VSCode: **File → Open Folder** → `/workspaces/TutorialOMJL_CodeSpace`
+
+6. Install the **Jupyter** extension in VSCode (install into the container when prompted).
+
+7. Open `notebooks/OMJL_Tutorial.ipynb` directly in VSCode.
+
 ### Option 3: Local Installation
 
 #### Prerequisites
