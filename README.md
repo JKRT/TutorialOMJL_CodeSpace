@@ -2,6 +2,11 @@
 
 Interactive tutorial for OpenModelica.jl (OMJL) - a Julia-based Modelica compiler.
 
+# How to run docker locally if you do not get the Jupyter notebook to run
+docker run -it -p 8888:8888 ghcr.io/jkrt/omjl-tutorial:latest
+Then you can execute using OM and reuse the same commands that are specified in the notebook. 
+Simply copy and paste.
+
 #NOTE 
 ```
 julia> using OM
