@@ -7,7 +7,7 @@ docker run -it ghcr.io/jkrt/omjl-tutorial:latest
 Then you can execute using OM and reuse the same commands that are specified in the notebook. 
 Simply copy and paste.
 
-Note you need to run git clone to get access to models locally 
+Note you need to run git clone to get access to models locally if you run the docker image for this tutorial outside this codespace.
 ```
 git clone https://github.com/JKRT/TutorialOMJL_CodeSpace.git
 ```
